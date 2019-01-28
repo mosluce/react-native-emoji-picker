@@ -41,9 +41,18 @@ class Example extends React.PureComponent {
   constructor() {
     super();
 
-    this.state = {};
+    this.state = {
+      text: '',
+    };
 
     this.toggle = this.toggle.bind(this);
+    this.onSelectEmoji = this.onSelectEmoji.bind(this);
+  }
+
+  onSelectEmoji(emoji) {
+    this.setState({
+      text: `${this.state.text}${emoji}`
+    })
   }
 
   toggle() {
@@ -56,7 +65,7 @@ class Example extends React.PureComponent {
     if (emojiPickerOpened) {
       closeEmojiPicker();
     } else {
-      openEmojiPicker();
+      openEmojiPicker(this.onSelectEmoji);
     }
   }
 
@@ -66,7 +75,7 @@ class Example extends React.PureComponent {
         <View style={styles.container}>
           <View style={{ flex: 1, backgroundColor: '#666' }} />
           <View style={styles.bar}>
-            <TextInput style={styles.input} placeholder="input here..." onSubmitEditing={Keyboard.dismiss} />
+            <TextInput style={styles.input} placeholder="input here..." onSubmitEditing={Keyboard.dismiss} value={this.state.text} onChangeText={text => this.setState({ text })} />
             <TouchableOpacity onPress={this.toggle}>
               <View style={styles.btn}>
                 <Text>{this.props.emojiPickerOpened ? 'Close' : 'Open'}</Text>

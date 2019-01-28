@@ -40,9 +40,10 @@ const styles = StyleSheet.create({
     height: tabHeight,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: `#EFEFEF99`,
   },
   tabListItemContainerSelected: {
-    backgroundColor: `#EFEFEF99`,
+    backgroundColor: `#CCCCCC99`,
   },
   gridContainer: {
     backgroundColor: '#FFFFFF',
@@ -104,11 +105,23 @@ class Tab extends React.PureComponent {
 }
 
 class EmojiItem extends React.PureComponent {
+  constructor() {
+    super();
+
+    this.onSelectEmoji = this.onSelectEmoji.bind(this);
+  }
+
+  onSelectEmoji() {
+    const { emoji, onSelectEmoji } = this.props;
+
+    onSelectEmoji(emoji);
+  }
+
   render() {
     const { emoji } = this.props;
 
     return (
-      <TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={this.onSelectEmoji}>
         <View style={styles.gridListItemContainer}>
           <Text>{emoji}</Text>
         </View>
@@ -125,7 +138,8 @@ class Grid extends React.PureComponent {
   }
 
   renderItem({ item }) {
-    return <EmojiItem emoji={item} />;
+    const { onSelectEmoji } = this.props;
+    return <EmojiItem emoji={item} onSelectEmoji={onSelectEmoji} />;
   }
 
   render() {
@@ -172,19 +186,16 @@ export class EmojiPicker extends React.PureComponent {
     } = this.state;
 
     const {
-      onSelectEmoji = () => { },
-      animtedMarginBottom,
+      onSelectEmoji,
     } = this.props;
 
     return (
-      // <Animated.View style={{ marginBottom: animtedMarginBottom }}>
       <View>
         <SafeAreaView style={styles.pickerContainer}>
           <Grid category={category} onSelectEmoji={onSelectEmoji} />
           <Tab category={category} onChangeCategory={this.setCategory} />
         </SafeAreaView>
       </View>
-      // </Animated.View>
     )
   }
 }
@@ -217,7 +228,8 @@ export class EmojiPickerProvider extends React.PureComponent {
 
     this.setState({
       keyboardHeight: height,
-      emojiPickerOpened: false
+      emojiPickerOpened: false,
+      onSelectEmoji: () => { },
     });
   }
 
@@ -227,7 +239,8 @@ export class EmojiPickerProvider extends React.PureComponent {
     });
   }
 
-  openEmojiPicker() {
+  openEmojiPicker(onSelectEmoji) {
+    this.setState({ onSelectEmoji });
     this.setState({ emojiPickerOpened: true });
 
     Animated.timing(this.state.animtedMarginBottom, {
@@ -251,7 +264,7 @@ export class EmojiPickerProvider extends React.PureComponent {
     let element = null;
 
     if (state.emojiPickerOpened)
-      element = <EmojiPicker animtedMarginBottom={this.state.animtedMarginBottom} />;
+      element = <EmojiPicker animtedMarginBottom={state.animtedMarginBottom} onSelectEmoji={state.onSelectEmoji} />;
 
     return (
       <EmojiPickerContext.Provider
