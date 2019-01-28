@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     borderTopWidth: 1,
-    borderTopColor: `#EFEFEF99`,
-    backgroundColor: `#FFFFFF`,
+    borderTopColor: `#CCCCCC99`,
+    backgroundColor: `#EFEFEF99`,
   },
   tabList: {
     height: tabHeight,
